@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>❤️ 给何红霞宝宝的爱 ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #FFE5E5 0%, #FFD1DC 100%);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 主按钮样式 */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            z-index: 1000;
+            position: relative;
+        }
+        
+        .main-title {
+            color: #D63384;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .launch-btn {
+            background: #FF69B4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+        
+        .launch-btn:hover {
+            background: #FF1493;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+        }
+        
+        .launch-btn:active {
+            transform: translateY(0);
+        }
+        
+        .progress-text {
+            color: #FF1493;
+            font-size: 14px;
+            margin-top: 10px;
+            height: 20px;
+        }
+        
+        /* 弹窗样式 */
+        .popup {
+            position: absolute;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            user-select: none;
+            transition: opacity 0.3s ease;
+            animation: fadeIn 0.5s ease forwards;
+            z-index: 100;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            touch-action: manipulation;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            to {
+                opacity: 0.95;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .popup.closing {
+            animation: fadeOut 0.5s ease forwards;
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+        
+        .popup-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #5A2D48;
+            text-align: center;
+            pointer-events: none;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #8B4789;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 50%;
+            pointer-events: all;
+            transition: background 0.2s;
+        }
+        
+        .popup-close:hover {
+            background: rgba(139, 71, 137, 0.1);
+        }
+        
+        /* 主爱心窗口样式 */
+        .main-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 250px;
+            background: #FF1493;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+            z-index: 10000;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            padding: 20px;
+        }
+        
+        .main-popup.show {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .heart-text {
+            font-size: 40px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .close-all-btn {
+            background: white;
+            color: #FF1493;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .close-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 主界面 -->
+    <div class="main-container" id="mainContainer">
+        <div class="main-title">❤️ 给何红霞宝宝的爱 ❤️</div>
+        <button class="launch-btn" onclick="launchPopups()">发射爱心弹窗 💕</button>
+        <div class="progress-text" id="progressText"></div>
+    </div>
+    
+    <!-- 主爱心弹窗 -->
+    <div class="main-popup" id="mainPopup">
+        <div class="heart-text">❤️<br>永远爱你</div>
+        <button class="close-all-btn" onclick="closeAllPopups()">点我关闭所有窗口 💝</button>
+    </div>
+
+    <script>
+        // 暖心话语列表
+        const messages = [
+            "要天天开心吖 💖", "事事好心意 🌸", "梦想成真 ✨", 
+            "天冷了，多穿衣服 🧣", "愿所有烦恼都消失 🍃",
+            "今天过得开心嘛 🌈", "记得吃水果 🍎", "多喝水哦~ 💧",
+            "顺顺利利 🍀", "保持好心情 😊", "期待下一次见面 🤗",
+            "别熬夜 🌙", "早点休息 💤", "宝宝我想你了 💕",
+            "照顾好自己 🌻", "每天都要元气满满 ⚡", "你是我的唯一 💝",
+            "爱你一辈子 ❤️", "有你真好 🌟", "你是我的 sunshine ☀️",
+            "抱抱你 🤗", "亲亲你 💋", "永远陪着你 👫", "你是我的宝贝 👑",
+            "想你每一天 📅", "爱你三千遍 💯", "你是我的人间理想 🌙",
+            "余生请多指教 💑", "遇见你真好 🍀", "心里只有你 💕"
+        ];
+        
+        // 配色方案
+        const colors = [
+            '#FFE5E5', '#FFD1DC', '#FFA6C9', '#FFB6C1', '#FFC0CB',
+            '#FFDAB9', '#FFE4E1', '#FFF0F5', '#F0E68C', '#E6E6FA',
+            '#D8BFD8', '#DDA0DD', '#F0FFF0', '#FFE4F1', '#E0FFE0',
+            '#FFE4B5', '#FFDEAD', '#FFE4E1', '#FFF5EE', '#FFF8DC',
+            '#F0F8FF', '#E0FFFF', '#F5F5DC', '#FFE5E5', '#FFDAB9'
+        ];
+        
+        let popupCount = 0;
+        const windowsList = [];
+        
+        function launchPopups() {
+            // 禁用按钮
+            document.querySelector('.launch-btn').disabled = true;
+            document.querySelector('.launch-btn').textContent = '发射中...';
+            
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const numWindows = 100;
+            const usedPositions = [];
+            
+            // 进度更新
+            const progressText = document.getElementById('progressText');
+            progressText.textContent = '正在发射爱心... 0%';
+            
+            for (let i = 0; i < numWindows; i++) {
+                const delay = i * 150;  // 修改为150ms延迟
+                
+                setTimeout(() => {
+                    // 随机大小
+                    const width = Math.floor(Math.random() * 80) + 160; // 160-240
+                    const height = Math.floor(Math.random() * 50) + 90;  // 90-140
+                    
+                    // 随机位置（避免重叠）
+                    let posX, posY, attempts = 0;
+                    do {
+                        posX = Math.floor(Math.random() * (screenWidth - width - 20)) + 10;
+                        posY = Math.floor(Math.random() * (screenHeight - height - 20)) + 10;
+                        attempts++;
+                    } while (isOverlapping(posX, posY, width, height, usedPositions) && attempts < 50);
+                    
+                    usedPositions.push({x: posX, y: posY, w: width, h: height});
+                    
+                    // 随机消息和颜色
+                    const message = messages[Math.floor(Math.random() * messages.length)];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    createPopup(message, color, posX, posY, width, height);
+                    
+                    // 更新进度
+                    if (i % 10 === 0) {
+                        progressText.textContent = `正在发射爱心... ${i}%`;
+                    }
+                    
+                    // 最后一个弹窗创建完毕后显示主爱心窗口
+                    if (i === numWindows - 1) {
+                        setTimeout(() => {
+                            progressText.textContent = '💕 全部弹窗已发射！点击任意窗口关闭';
+                            setTimeout(() => {
+                                document.getElementById('mainContainer').style.display = 'none';
+                                const mainPopup = document.getElementById('mainPopup');
+                                mainPopup.classList.add('show');
+                                mainPopup.style.display = 'flex';
+                            }, 1000);
+                        }, 100);
+                    }
+                }, delay);
+            }
+        }
+        
+        function isOverlapping(x, y, w, h, usedPositions) {
+            for (let pos of usedPositions) {
+                if (Math.abs(x - pos.x) < 50 && Math.abs(y - pos.y) < 40) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function createPopup(message, color, x, y, width, height) {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            popup.style.width = width + 'px';
+            popup.style.height = height + 'px';
+            popup.style.backgroundColor = color;
+            
+            popup.innerHTML = `
+                <button class="popup-close" onclick="event.stopPropagation()">✖</button>
+                <div class="popup-text">${message}</div>
+            `;
+            
+            popup.onclick = closeAllPopups;
+            
+            document.body.appendChild(popup);
+            windowsList.push(popup);
+            popupCount++;
+        }
+        
+        function closeAllPopups() {
+            // 给所有弹窗添加关闭动画
+            windowsList.forEach(window => {
+                if (window && window.classList) {
+                    window.classList.add('closing');
+                }
+            });
+            
+            // 淡出后移除元素
+            setTimeout(() => {
+                windowsList.forEach((window, index) => {
+                    if (window && window.parentNode) {
+                        window.remove();
+                    }
+                });
+                windowsList.length = 0;
+                
+                // 隐藏主弹窗
+                const mainPopup = document.getElementById('mainPopup');
+                if (mainPopup) {
+                    mainPopup.style.display = 'none';
+                }
+                
+                // 重置主界面
+                const mainContainer = document.getElementById('mainContainer');
+                mainContainer.style.display = 'flex';
+                const btn = document.querySelector('.launch-btn');
+                btn.disabled = false;
+                btn.textContent = '发射爱心弹窗 💕';
+                document.getElementById('progressText').textContent = '';
+            }, 500);
+        }
+    </script>
+</body>
+</html>
